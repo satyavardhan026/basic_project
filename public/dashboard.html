@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Infinity Bank</title>
+    <meta name="description" content="Manage your Infinity Bank account, transactions, loans, and cards from your personal dashboard.">
+    
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-infinity"></i>
+                <span>Infinity Bank</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/about" class="nav-link">About</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/services" class="nav-link">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/contact" class="nav-link">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" id="logoutBtn">Logout</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+        <div class="container">
+            <div class="welcome-section">
+                <h1>Welcome back, <span id="userName">User</span>!</h1>
+                <p>Here's your financial overview for today</p>
+            </div>
+            <div class="quick-actions">
+                <button class="btn btn-primary" id="newTransactionBtn">
+                    <i class="fas fa-plus"></i> New Transaction
+                </button>
+                <button class="btn btn-secondary" id="applyLoanBtn">
+                    <i class="fas fa-hand-holding-usd"></i> Apply for Loan
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="dashboard-content">
+        <div class="container">
+            <!-- Account Overview -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h2>Account Overview</h2>
+                    <button class="btn btn-outline" id="refreshBalanceBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                <div class="account-cards">
+                    <div class="account-card primary">
+                        <div class="card-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Account Balance</h3>
+                            <div class="balance-amount">₹<span id="accountBalance">0.00</span></div>
+                            <p class="account-number">Account: <span id="accountNumber">IB0000000000</span></p>
+                        </div>
+                    </div>
+                    <div class="account-card">
+                        <div class="card-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Credit Limit</h3>
+                            <div class="amount">₹<span id="creditLimit">0.00</span></div>
+                            <p>Available: ₹<span id="availableCredit">0.00</span></p>
+                        </div>
+                    </div>
+                    <div class="account-card">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Total Assets</h3>
+                            <div class="amount">₹<span id="totalAssets">0.00</span></div>
+                            <p>This month</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="dashboard-section">
+                <h2>Quick Actions</h2>
+                <div class="quick-actions-grid">
+                    <div class="action-card" data-action="transfer">
+                        <div class="action-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h3>Transfer Money</h3>
+                        <p>Send money to other accounts</p>
+                    </div>
+                    <div class="action-card" data-action="deposit">
+                        <div class="action-icon">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <h3>Deposit</h3>
+                        <p>Add money to your account</p>
+                    </div>
+                    <div class="action-card" data-action="withdraw">
+                        <div class="action-icon">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <h3>Withdraw</h3>
+                        <p>Take money from your account</p>
+                    </div>
+                    <div class="action-card" data-action="upi">
+                        <div class="action-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>UPI Payment</h3>
+                        <p>Pay using UPI ID</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Transactions -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h2>Recent Transactions</h2>
+                    <a href="#" class="btn btn-outline" id="viewAllTransactionsBtn">
+                        View All
+                    </a>
+                </div>
+                <div class="transactions-list" id="transactionsList">
+                    <div class="loading-placeholder">
+                        <div class="spinner"></div>
+                        <p>Loading transactions...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loans & Cards -->
+            <div class="dashboard-grid">
+                <!-- Active Loans -->
+                <section class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Active Loans</h2>
+                        <button class="btn btn-outline" id="viewAllLoansBtn">
+                            View All
+                        </button>
+                    </div>
+                    <div class="loans-list" id="loansList">
+                        <div class="empty-state">
+                            <i class="fas fa-hand-holding-usd"></i>
+                            <p>No active loans</p>
+                            <button class="btn btn-primary" id="applyLoanBtn2">Apply for Loan</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Active Cards -->
+                <section class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Active Cards</h2>
+                        <button class="btn btn-outline" id="viewAllCardsBtn">
+                            View All
+                        </button>
+                    </div>
+                    <div class="cards-list" id="cardsList">
+                        <div class="empty-state">
+                            <i class="fas fa-credit-card"></i>
+                            <p>No active cards</p>
+                            <button class="btn btn-primary" id="applyCardBtn">Apply for Card</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- UPI Integration -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h2>UPI Integration</h2>
+                    <button class="btn btn-primary" id="linkUPIBtn">
+                        <i class="fas fa-link"></i> Link UPI Account
+                    </button>
+                </div>
+                <div class="upi-accounts" id="upiAccounts">
+                    <div class="empty-state">
+                        <i class="fas fa-mobile-alt"></i>
+                        <p>No UPI accounts linked</p>
+                        <p class="text-muted">Link your UPI accounts for seamless payments</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Transaction Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>New Transaction</h3>
+                <button class="modal-close" id="closeTransactionModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="transactionForm">
+                    <div class="form-group">
+                        <label for="transactionType">Transaction Type</label>
+                        <select id="transactionType" name="type" required>
+                            <option value="">Select type</option>
+                            <option value="transfer">Transfer</option>
+                            <option value="deposit">Deposit</option>
+                            <option value="withdrawal">Withdrawal</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="receiverGroup" style="display: none;">
+                        <label for="receiverId">Receiver Account</label>
+                        <input type="text" id="receiverId" name="receiverId" placeholder="Enter account number or UPI ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount (₹)</label>
+                        <input type="number" id="amount" name="amount" min="0.01" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <input type="text" id="description" name="description" placeholder="Transaction purpose">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Process Transaction</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPI Link Modal -->
+    <div id="upiModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Link UPI Account</h3>
+                <button class="modal-close" id="closeUPIModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="upiForm">
+                    <div class="form-group">
+                        <label for="upiId">UPI ID</label>
+                        <input type="text" id="upiId" name="upiId" placeholder="username@bankname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bankName">Bank Name</label>
+                        <input type="text" id="bankName" name="bankName" placeholder="Enter bank name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="accountNumber">Account Number</label>
+                        <input type="text" id="accountNumber" name="accountNumber" placeholder="Enter account number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ifscCode">IFSC Code</label>
+                        <input type="text" id="ifscCode" name="ifscCode" placeholder="Enter IFSC code" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Link Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-infinity"></i>
+                        <span>Infinity Bank</span>
+                    </div>
+                    <p>Your trusted financial partner for modern banking solutions.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/services">Services</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <div class="contact-info">
+                        <p><i class="fas fa-phone"></i> +91 1800-123-4567</p>
+                        <p><i class="fas fa-envelope"></i> support@infinitybank.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Infinity Bank. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
